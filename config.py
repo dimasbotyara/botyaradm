@@ -12,6 +12,9 @@ PYDM_DIR = Path.home() / ".config" / "pydm"
 # Файл истории запусков
 HISTORY_FILE = PYDM_DIR / "history.json"
 
+# Файл пользовательских настроек (setup wizard)
+SETTINGS_FILE = PYDM_DIR / "settings.json"
+
 # ─── Пользователь ─────────────────────────────────────
 USERNAME = "dimasbotyara"
 
@@ -69,13 +72,23 @@ KNOWN_SESSIONS = {
     "tinywm":        "TinyWM",
 }
 
-# ─── Цвета (Rich markup) ──────────────────────────────
-COLOR_GREETING   = "white"
-COLOR_SELECTED   = "bold blue"
-COLOR_UNSELECTED = "bright_cyan"       # голубой
-COLOR_COUNTDOWN  = "dim white"
-COLOR_TTY_OPTION = "bright_cyan"
+# ─── Настройки TUI (curses) ───────────────────────────
+SHOW_ASCII_LOGO   = True               # Показывать ASCII-логотип в шапке
+SHOW_SESSION_TYPE = True               # Показывать теги [X11] / [Wayland] / [TTY]
+SHOW_STATUS_BAR   = True               # Показывать строку статуса (время, юзер, сессии)
+CLEAR_TERMINAL    = True               # Очищать терминал до и после работы PyDM
+DEFAULT_THEME     = "pydm_classic"     # Тема по умолчанию до прохождения мастера
 
-# ─── Название специального пункта ──────────────────────
-TTY_OPTION_NAME = "Продолжить в TTY"
-TTY_OPTION_EXEC = "__tty__"            # Маркер, не команда
+# ─── Цвета (имена цветов curses) ──────────────────────
+# Доступны: black, red, green, yellow, blue, magenta, cyan, white, default
+COLOR_GREETING   = "white"
+COLOR_SELECTED   = "blue"
+COLOR_UNSELECTED = "cyan"              # голубой
+COLOR_COUNTDOWN  = "white"
+COLOR_TTY_OPTION = "cyan"
+COLOR_ACCENT     = "cyan"
+
+# ─── Названия специальных пунктов / маркеров ───────────
+TTY_OPTION_NAME    = "Продолжить в TTY"
+TTY_OPTION_EXEC    = "__tty__"         # Маркер выхода в TTY
+WIZARD_OPTION_EXEC = "__wizard__"      # Маркер повторного запуска мастера настройки

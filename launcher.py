@@ -5,31 +5,38 @@ launcher.py — Запуск выбранной DE/WM.
   - X11 через startx
   - Wayland напрямую
   - TTY (просто возврат в shell)
+  - Смену пользователя при запуске (если выбран другой пользователь)
 """
 
 import os
-import subprocess
+import pwd
+import shlex
 import sys
 from pathlib import Path
 
-from config import TTY_OPTION_EXEC
+from config import CLEAR_TERMINAL, TTY_OPTION_EXEC
 from detector import get_session_type
 from history import record_launch
+from tui_utils import clear_terminal
 
 
-def _create_xinitrc(exec_cmd: str) -> Path:
+def _target_home(username: str | None) -> Path:
+    """Возвращает домашнюю директорию целевого пользователя."""
+    if username:
+        try:
+            return Path(pwd.getpwnam(username).pw_dir)
+        except KeyError:
+            pass
+    return Path.home()
+
+
+def _create_xinitrc(exec_cmd: str, username: str | None = None) -> Path:
     """
     Создаёт временный .xinitrc для startx.
-
     Пишет в ~/.xinitrc.pydm чтобы не трогать пользовательский ~/.xinitrc.
-
-    Args:
-        exec_cmd: Команда запуска DE/WM.
-
-    Returns:
-        Путь к созданному файлу.
     """
-    xinitrc_path = Path.home() / ".xinitrc.pydm"
+    home_dir = _target_home(username)
+    xinitrc_path = home_dir / ".xinitrc.pydm"
 
     content = f"""#!/bin/sh
 # Сгенерировано PyDM — не редактируйте вручную!
@@ -51,87 +58,111 @@ exec {exec_cmd}
     try:
         xinitrc_path.write_text(content, encoding="utf-8")
         xinitrc_path.chmod(0o755)
-    except OSError as e:
+        if username and os.geteuid() == 0:
+            pw = pwd.getpwnam(username)
+            os.chown(xinitrc_path, pw.pw_uid, pw.pw_gid)
+    except (OSError, KeyError) as e:
         print(f"[PyDM] Ошибка создания xinitrc: {e}", file=sys.stderr)
         sys.exit(1)
 
     return xinitrc_path
 
 
-def _launch_x11(exec_cmd: str) -> None:
-    """
-    Запускает X11 сессию через startx.
+def _switch_user_as_root(username: str) -> None:
+    """Переключает UID/GID и окружение на целевого пользователя (при запуске от root)."""
+    pw = pwd.getpwnam(username)
+    os.environ["HOME"] = pw.pw_dir
+    os.environ["USER"] = pw.pw_name
+    os.environ["LOGNAME"] = pw.pw_name
+    if pw.pw_shell:
+        os.environ["SHELL"] = pw.pw_shell
 
-    Args:
-        exec_cmd: Команда DE/WM для запуска.
-    """
-    xinitrc = _create_xinitrc(exec_cmd)
-
-    # startx использует .xinitrc по умолчанию,
-    # но мы явно указываем наш файл
-    # exec заменяет текущий процесс — это важно!
-    # Если не сделать exec, после закрытия DE
-    # вернётся PyDM вместо TTY логина
-    os.execvp("startx", ["startx", str(xinitrc)])
+    os.initgroups(pw.pw_name, pw.pw_gid)
+    os.setgid(pw.pw_gid)
+    os.setuid(pw.pw_uid)
+    try:
+        os.chdir(pw.pw_dir)
+    except OSError:
+        pass
 
 
-def _launch_wayland(exec_cmd: str) -> None:
-    """
-    Запускает Wayland сессию напрямую.
+def _current_username() -> str:
+    try:
+        return pwd.getpwuid(os.getuid()).pw_name
+    except KeyError:
+        return os.environ.get("USER") or ""
 
-    Args:
-        exec_cmd: Команда композитора (sway, hyprland, etc.)
-    """
-    # Устанавливаем XDG_SESSION_TYPE чтобы приложения знали
+
+def _launch_x11(exec_cmd: str, username: str | None = None) -> None:
+    """Запускает X11 сессию через startx."""
+    current = _current_username()
+    xinitrc = _create_xinitrc(exec_cmd, username)
+
+    if CLEAR_TERMINAL:
+        clear_terminal()
+
+    if username and username != current:
+        if os.geteuid() == 0:
+            _switch_user_as_root(username)
+            os.execvp("startx", ["startx", str(xinitrc)])
+        else:
+            cmd_str = f"startx {shlex.quote(str(xinitrc))}"
+            os.execvp("su", ["su", "-", username, "-c", cmd_str])
+    else:
+        os.execvp("startx", ["startx", str(xinitrc)])
+
+
+def _launch_wayland(exec_cmd: str, username: str | None = None) -> None:
+    """Запускает Wayland сессию напрямую."""
+    current = _current_username()
     os.environ["XDG_SESSION_TYPE"] = "wayland"
 
-    # Разбиваем команду на части для exec
-    parts = exec_cmd.split()
-    os.execvp(parts[0], parts)
+    if CLEAR_TERMINAL:
+        clear_terminal()
+
+    if username and username != current:
+        if os.geteuid() == 0:
+            _switch_user_as_root(username)
+            parts = exec_cmd.split()
+            os.execvp(parts[0], parts)
+        else:
+            cmd_str = f"XDG_SESSION_TYPE=wayland exec {exec_cmd}"
+            os.execvp("su", ["su", "-", username, "-c", cmd_str])
+    else:
+        parts = exec_cmd.split()
+        os.execvp(parts[0], parts)
 
 
 def _stay_in_tty() -> None:
-    """
-    Пользователь выбрал остаться в TTY.
-    Просто выходим, shell продолжит работу.
-    """
-    print()
-    print("[PyDM] Оставайся в TTY. Приятной работы!")
-    print("[PyDM] Чтобы запустить PyDM снова: python ~/.config/pydm/main.py")
-    print()
-    # НЕ вызываем sys.exit(0) здесь, просто return
-    # main.py сам решит что делать
+    """Пользователь выбрал остаться в TTY."""
+    if CLEAR_TERMINAL:
+        clear_terminal()
 
 
-def launch(exec_cmd: str, display_name: str) -> None:
+def launch(
+    exec_cmd: str,
+    display_name: str,
+    username: str | None = None,
+) -> None:
     """
     Главная функция запуска.
 
     Определяет тип сессии и запускает соответствующим образом.
     Записывает выбор в историю перед запуском.
-
-    Args:
-        exec_cmd: Команда запуска.
-        display_name: Человеко-читаемое название (для истории).
     """
-    # Если TTY — не записываем в историю
     if exec_cmd == TTY_OPTION_EXEC:
         _stay_in_tty()
         return
 
-    # Записываем в историю ДО запуска
-    # (после exec процесс заменится и код дальше не выполнится)
     record_launch(exec_cmd, display_name)
 
     session_type = get_session_type(exec_cmd)
 
     if session_type == "wayland":
-        _launch_wayland(exec_cmd)
+        _launch_wayland(exec_cmd, username=username)
     else:
-        _launch_x11(exec_cmd)
+        _launch_x11(exec_cmd, username=username)
 
-    # Сюда мы не должны попасть (exec заменяет процесс)
-    # Но если вдруг exec не сработал:
     print(
         f"[PyDM] Ошибка: не удалось запустить {display_name}",
         file=sys.stderr,
