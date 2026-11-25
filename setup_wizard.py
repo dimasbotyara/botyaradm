@@ -1,5 +1,5 @@
 """
-setup_wizard.py — Интерактивный мастер первоначальной настройки PyDM на curses.
+setup_wizard.py — Интерактивный мастер первоначальной настройки botyaradm на curses.
 
 Шаги:
   1. (Если > 1 пользователя) Всегда ли спрашивать пользователя при запуске
@@ -34,7 +34,7 @@ def _draw_wizard_box(
     max_y, max_x = stdscr.getmaxyx()
 
     if max_y < 10 or max_x < 28:
-        safe_addstr(stdscr, 0, 0, "PyDM Setup: terminal too small", attrs["countdown"])
+        safe_addstr(stdscr, 0, 0, "botyaradm Setup: terminal too small", attrs["countdown"])
         stdscr.refresh()
         return 1
 
@@ -65,7 +65,7 @@ def _draw_wizard_box(
     safe_addstr(stdscr, y, left, top_border, attrs["border"])
     y += 1
 
-    banner_left = " [ PyDM Setup Wizard ]"
+    banner_left = " [ botyaradm Setup Wizard ]"
     banner_right = f"[{step_label}] "
     gap_banner = max(1, inner_w - len(banner_left) - len(banner_right))
     banner_mid = (banner_left + (" " * gap_banner) + banner_right)[:inner_w]
@@ -388,7 +388,7 @@ def _wizard_main(
     total_main_steps = 3 if multi_user else 2
 
     while True:
-        current_theme = str(result.get("theme", "pydm_classic"))
+        current_theme = str(result.get("theme", "botyaradm_classic"))
 
         if stage == "ask_user_mode":
             init_idx = 0 if result.get("ask_user_always", False) else 1
@@ -472,7 +472,7 @@ def _wizard_main(
                 (THEMES[tid].name, THEMES[tid].description)
                 for tid in THEME_ORDER
             ]
-            cur_tid = result.get("theme", "pydm_classic")
+            cur_tid = result.get("theme", "botyaradm_classic")
             init_idx = THEME_ORDER.index(cur_tid) if cur_tid in THEME_ORDER else 0
 
             action, idx = _prompt_step(

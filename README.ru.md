@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner-ru.svg" alt="Баннер botyaradm (PyDM)" width="100%"/>
+  <img src="assets/banner-ru.svg" alt="Баннер botyaradm" width="100%"/>
 </p>
 
 <p align="center">
@@ -8,17 +8,17 @@
 
 ---
 
-# 🖥️ botyaradm (PyDM)
+# 🖥️ botyaradm
 
-**botyaradm** (внутри проекта также **PyDM**) — лёгкий, быстрый и уютный **TTY дисплей-менеджер / лаунчер сессий** для Linux на чистом Python с использованием встроенной библиотеки `curses`.
+**botyaradm** — лёгкий, быстрый и уютный **TTY дисплей-менеджер / лаунчер сессий** для Linux на чистом Python с использованием встроенной библиотеки `curses`.
 
-Работает напрямую на **системном Python** и не требует **ни одной внешней зависимости** — никаких `venv`, `pip install` и поломок при обновлении Python или системы! 🚀
+Работает напрямую на **системном Python** и не требует **ни одной внешней зависимости** — никаких `venv`, `pyenv`, `pip install` и поломок при обновлении Python или системы! 🚀
 
 ---
 
 ## ✨ Возможности
 
-- 🧱 **Ноль сторонних зависимостей** — только стандартная библиотека Python (`curses`, `json`, `pathlib`, `configparser`, `shutil`).
+- 🧱 **Ноль сторонних зависимостей** — только стандартная библиотека Python (`curses`, `json`, `pathlib`, `configparser`, `shutil`, `pwd`).
 - 🎨 **Стильный ASCII TUI на `curses` и 25 тем оформления** — аккуратные ASCII-рамки, логотип, теги типа сессии (`[X11]`, `[Wayland]`, `[TTY]`), часы и адаптивная вёрстка для больших терминалов и классического Linux TTY 80×24. Встроены 25 тем (**Ayu Dark/Mirage/Light**, **Gruvbox Dark/Material/Light**, **Pacman (Arch Linux)**, **Catppuccin**, **Dracula**, **Nord**, **Tokyo Night**, **One Dark**, **Monokai Pro**, **Solarized**, **Everforest**, **Kanagawa**, **Rosé Pine**, **Synthwave '84**, **Cyberpunk**, **Matrix**, **Oxocarbon**, **Amber CRT**, **Monochrome**) с поддержкой 256 цветов и fallback на 8 цветов!
 - 🧙 **Мастер настройки при первом запуске (Setup Wizard)** — открывается автоматически при старте (или по клавише `w` / флагу `--setup`):
   - **Выбор пользователя**: если в системе больше одного пользователя, спрашивает, выбирать ли его при каждом входе или использовать одного по умолчанию (если пользователь один — выбирается автоматически).
@@ -26,11 +26,11 @@
   - **Живой предпросмотр тем**: переключение всех 25 тем в реальном времени прямо при прокрутке.
 - 🧹 **Очистка терминала до и после работы** — очищает экран перед запуском TUI и после выхода или старта сессии.
 - 🔍 **Автопоиск DE/WM** — сканирует `/usr/share/xsessions/*.desktop`, `/usr/share/wayland-sessions/*.desktop`, а также проверяет 35+ известных команд из `KNOWN_SESSIONS` в `PATH`.
-- ⚡ **Умная история и сортировка** — атомарно сохраняет счётчик запусков и время последнего использования в `~/.config/pydm/history.json`, поднимая частые и недавние сессии наверх списка.
+- ⚡ **Умная история и сортировка** — атомарно сохраняет счётчик запусков и время последнего использования в `~/.config/botyaradm/history.json`, поднимая частые и недавние сессии наверх списка.
 - ⏱️ **Живой таймер автозапуска** — автоматически запускает последнюю использованную DE/WM после настраиваемой паузы (по умолчанию `5` секунд) с ASCII-прогресс-баром (`[########..]`); отменяется любой клавишей.
 - 💬 **100+ приветствий по времени суток** — неповторяющиеся случайные фразы для ночи, раннего утра, утра, дня, вечера и позднего вечера.
 - 🚀 **Поддержка X11, Wayland и TTY**:
-  - **X11**: создаёт `~/.xinitrc.pydm` (подгружая `~/.Xresources` и `~/.xprofile`, не трогая ваш `~/.xinitrc`) и передаёт управление через `startx`.
+  - **X11**: создаёт `~/.xinitrc.botyaradm` (подгружая `~/.Xresources` и `~/.xprofile`, не трогая ваш `~/.xinitrc`) и передаёт управление через `startx`.
   - **Wayland**: выставляет `XDG_SESSION_TYPE=wayland` и запускает композитор напрямую.
   - **TTY**: аккуратно возвращает управление в shell.
 - 🛡️ **Аварийный Bash-режим** — в комплекте есть [`fallback.sh`](fallback.sh) без зависимости от Python на случай сбоя.
@@ -49,7 +49,7 @@ botyaradm/
 ├── setup_wizard.py      # 🧙 Мастер настройки с живым предпросмотром тем
 ├── themes.py            # 🎨 25 цветовых тем (256 цветов + 8-цветный TTY fallback)
 ├── auth.py              # 🔐 Поиск пользователей системы и проверка пароля (PAM/su)
-├── settings.py          # 💾 Сохранение настроек (~/.config/pydm/settings.json)
+├── settings.py          # 💾 Сохранение настроек (~/.config/botyaradm/settings.json)
 ├── tui_utils.py         # 🧹 Очистка терминала и общие утилиты curses
 ├── detector.py          # 🔍 Поиск .desktop файлов и бинарников в PATH
 ├── history.py           # 📊 Атомарная история запусков и сортировка
@@ -64,45 +64,167 @@ botyaradm/
 
 ## 📦 Требования
 
-- 🐍 **Python 3.10+** (стандартная библиотека с модулем `curses`)
+- 🐍 **Python 3.10+** (системный Python со стандартным модулем `curses` — без `venv` и `pip`)
 - 🖼️ **Для X11-сессий**: `startx` (`xorg-xinit`)
 - 🪟 **Для Wayland-сессий**: установленный Wayland-композитор (например, `hyprland`, `sway`, `river`, `labwc`, `wayfire`)
 
 ---
 
-## 🛠️ Установка и автозапуск
+## 📍 Куда рекомендовано устанавливать
 
-Склонируйте репозиторий в `~/.config/pydm`:
+Выбор пути зависит от того, как вы планируете запускать `botyaradm`:
+
+| Сценарий | Рекомендуемый путь | Почему так удобнее |
+| --- | --- | --- |
+| 👤 **Один пользователь / Autologin на `tty1`** *(рекомендуется)* | `~/.config/botyaradm` | Всё хранится в вашей пользовательской папке конфигов рядом с `~/.config/fish`, не нужен `sudo`. |
+| 👥 **Несколько пользователей / Общесистемный DM** | `/opt/botyaradm` | Единая установка, доступная всем пользователям и системному `systemd`-сервису. |
+
+---
+
+## 🛠️ Туториал по установке и автозапуску
+
+### Шаг 1: Скачивание проекта
+
+Для одного пользователя (рекомендуемый вариант):
 
 ```bash
-git clone https://github.com/dimasbotyara/botyaradm.git ~/.config/pydm
-chmod +x ~/.config/pydm/fallback.sh
+git clone https://github.com/dimasbotyara/botyaradm.git ~/.config/botyaradm
+chmod +x ~/.config/botyaradm/fallback.sh
 ```
 
-При необходимости отредактируйте `~/.config/pydm/config.py` (имя пользователя `USERNAME`, таймаут `AUTO_SELECT_TIMEOUT`, цвета и опции интерфейса).
+Проверьте, что системный Python доступен (никакой `.venv` или `pyenv` создавать не нужно!):
 
-### 🐟 Автозапуск в Fish (`~/.config/fish/config.fish`)
+```bash
+python3 --version
+```
 
-Запуск при входе в `tty1` (с автоматическим переходом в `fallback.sh`, если Python завершился с ошибкой):
+> 💡 При первом запуске автоматически откроется **Setup Wizard**: он настроит выбор пользователя, запрос пароля и тему оформления. Открыть мастер снова можно в любой момент клавишей `w` из главного меню или командой `python3 ~/.config/botyaradm/main.py --setup`.
+
+---
+
+### Способ 1: Autologin на `tty1` + Fish *(как на Arch Linux, рекомендуется)* 🐟
+
+Классический и максимально удобный вариант: `systemd` автоматически логинит вас в `tty1`, а `fish` сразу запускает `botyaradm` (с аварийным откатом на `fallback.sh` и `startx`).
+
+#### 1.1 Настройка автологина на `tty1` через `systemd`
+
+Выполните:
+
+```bash
+sudo systemctl edit getty@tty1
+```
+
+В открывшемся файле пропишите (заменив `your_username` на имя вашего пользователя):
+
+```ini
+[Service]
+ExecStart=
+ExecStart=-/sbin/agetty --autologin your_username --noclear %I $TERM
+```
+
+#### 1.2 Настройка `~/.config/fish/config.fish`
+
+Добавьте чистый блок автозапуска на `tty1` (без лишних путей `pyenv`/`.venv`):
 
 ```fish
+if status is-interactive
+    # Команды для интерактивных сессий
+end
+
 if status is-login
-    if test (tty) = "/dev/tty1"; and not set -q DISPLAY; and not set -q WAYLAND_DISPLAY
-        python3 ~/.config/pydm/main.py
-        if test $status -ne 0
-            bash ~/.config/pydm/fallback.sh
+    if test -z "$DISPLAY" -a -z "$WAYLAND_DISPLAY" -a "$XDG_VTNR" = "1"
+        set -l BOTYARADM_DIR "$HOME/.config/botyaradm"
+        set -l BOTYARADM_MAIN "$BOTYARADM_DIR/main.py"
+        set -l BOTYARADM_FALLBACK "$BOTYARADM_DIR/fallback.sh"
+
+        if command -q python3; and test -f "$BOTYARADM_MAIN"
+            # Запускаем TUI-меню на системном Python
+            python3 "$BOTYARADM_MAIN"
+
+            # Если Python упал с ошибкой — запускаем bash fallback
+            if test $status -ne 0; and test -f "$BOTYARADM_FALLBACK"
+                bash "$BOTYARADM_FALLBACK"
+            end
+        else if test -f "$BOTYARADM_FALLBACK"
+            # Python не найден — запускаем bash fallback
+            bash "$BOTYARADM_FALLBACK"
+        else
+            # Совсем ничего нет — классический startx
+            echo "[botyaradm] Ни Python, ни fallback.sh не найдены."
+            echo "[botyaradm] Запускаю startx напрямую..."
+            exec startx
         end
     end
 end
 ```
 
-### 🐚 Автозапуск в Bash / Zsh (`~/.bash_profile` или `~/.zprofile`)
+---
+
+### Способ 2: Autologin на `tty1` + Bash / Zsh 🐚
+
+Если вы используете `bash` (`~/.bash_profile`) или `zsh` (`~/.zprofile`), включите автологин `getty@tty1` (см. шаг 1.1 выше) и добавьте:
 
 ```bash
-if [ "$(tty)" = "/dev/tty1" ] && [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ]; then
-    python3 "$HOME/.config/pydm/main.py" || bash "$HOME/.config/pydm/fallback.sh"
+if [ -z "$DISPLAY" ] && [ -z "$WAYLAND_DISPLAY" ] && [ "${XDG_VTNR:-0}" -eq 1 ]; then
+    BOTYARADM_DIR="$HOME/.config/botyaradm"
+    if command -v python3 >/dev/null 2>&1 && [ -f "$BOTYARADM_DIR/main.py" ]; then
+        python3 "$BOTYARADM_DIR/main.py" || bash "$BOTYARADM_DIR/fallback.sh"
+    elif [ -f "$BOTYARADM_DIR/fallback.sh" ]; then
+        bash "$BOTYARADM_DIR/fallback.sh"
+    else
+        exec startx
+    fi
 fi
 ```
+
+---
+
+### Способ 3: Системный `systemd`-сервис (без shell-autologin) ⚙️
+
+Если хочется использовать `botyaradm` как **полноценный многопользовательский дисплей-менеджер** на `tty1` (особенно удобно вместе с выбором пользователя и проверкой пароля в Setup Wizard):
+
+1. Установите проект в `/opt/botyaradm`:
+   ```bash
+   sudo git clone https://github.com/dimasbotyara/botyaradm.git /opt/botyaradm
+   sudo chmod +x /opt/botyaradm/fallback.sh
+   ```
+2. Создайте файл `/etc/systemd/system/botyaradm.service`:
+   ```ini
+   [Unit]
+   Description=botyaradm TTY Display Manager
+   After=systemd-user-sessions.service plymouth-quit-wait.service
+   Conflicts=getty@tty1.service
+
+   [Service]
+   Type=idle
+   ExecStart=/usr/bin/python3 /opt/botyaradm/main.py
+   StandardInput=tty
+   StandardOutput=tty
+   TTYPath=/dev/tty1
+   TTYReset=yes
+   TTYVHangup=yes
+   Restart=on-failure
+
+   [Install]
+   WantedBy=multi-user.target
+   ```
+3. Включите сервис (убедитесь, что другие DM вроде `gdm`/`sddm`/`lightdm` отключены):
+   ```bash
+   sudo systemctl disable getty@tty1
+   sudo systemctl enable botyaradm.service
+   ```
+
+---
+
+### Способ 4: Ручной запуск из любого TTY 💻
+
+Запустить `botyaradm` вручную можно из любой консоли (TTY):
+
+```bash
+python3 ~/.config/botyaradm/main.py
+```
+
+При желании можно добавить короткий алиас в конфиг оболочки (например, для Fish: `alias dm="python3 ~/.config/botyaradm/main.py"`).
 
 ---
 
@@ -125,63 +247,14 @@ fi
 
 Основные параметры в [`config.py`](config.py):
 
-- `USERNAME` — имя пользователя для приветствий и строки статуса.
+- `USERNAME` — запасное имя пользователя до прохождения мастера настройки.
 - `AUTO_SELECT_TIMEOUT` — задержка в секундах перед автозапуском последней сессии (`0` отключает автозапуск).
 - `SHOW_ASCII_LOGO` — показывать или скрывать ASCII-логотип в шапке.
 - `SHOW_SESSION_TYPE` — отображать бейджи `[X11]`, `[Wayland]`, `[TTY]`.
 - `SHOW_STATUS_BAR` — отображать строку с временем, пользователем и числом сессий.
-- `COLOR_GREETING`, `COLOR_SELECTED`, `COLOR_UNSELECTED`, `COLOR_COUNTDOWN`, `COLOR_TTY_OPTION`, `COLOR_ACCENT` — имена цветов `curses` (`black`, `red`, `green`, `yellow`, `blue`, `magenta`, `cyan`, `white`).
-- `KNOWN_SESSIONS` — словарь резервных команд DE/WM на случай отсутствия `.desktop` файлов.
 - `CLEAR_TERMINAL` — очистка терминала до запуска и после выхода (`True` / `False`).
-- `DEFAULT_THEME` — тема по умолчанию до прохождения мастера настройки.
-
----
-
-## 🤝 Как внести вклад и создать PR
-
-Мы всегда рады новым темам оформления, поддержке DE/WM и улучшениям! 🙌
-
-### 1️⃣ Сделайте форк и создайте ветку
-
-```bash
-# Сделайте Fork репозитория на GitHub и клонируйте свой форк:
-git clone https://github.com/<your-username>/botyaradm.git
-cd botyaradm
-
-# Создайте отдельную ветку под изменения:
-git checkout -b feat/my-awesome-feature
-```
-
-### 2️⃣ Внесите изменения
-
-- 🎨 **Добавить новую тему**: добавьте объект `Theme(...)` в список `_THEMES_LIST` в [`themes.py`](themes.py) с палитрой `palette_256` и fallback-цветами `palette_8`.
-- 🖥️ **Добавить DE/WM**: добавьте команду запуска и название в `KNOWN_SESSIONS` в [`config.py`](config.py) (и при желании в [`fallback.sh`](fallback.sh)).
-- 💬 **Добавить приветствия**: дополните словарь `_GREETINGS` в [`greetings.py`](greetings.py).
-- 🧱 **Без сторонних зависимостей**: используйте только стандартную библиотеку Python (`curses`, `json`, `pathlib` и т.д.), чтобы проект стабильно запускался из системного Python.
-
-### 3️⃣ Проверьте изменения локально
-
-```bash
-# Проверка синтаксиса всех Python-файлов:
-python3 -m py_compile *.py
-
-# Безопасный тест с чистым временным HOME:
-HOME=$(mktemp -d) python3 main.py
-```
-
-### 4️⃣ Закоммитьте, отправьте и откройте Pull Request
-
-```bash
-git add -A
-git commit -m "feat: add my awesome theme"
-git push -u origin feat/my-awesome-feature
-```
-
-После этого откройте **Pull Request** в ветку `main` репозитория `dimasbotyara/botyaradm` на GitHub — или одной командой через GitHub CLI:
-
-```bash
-gh pr create --base main --title "feat: add my awesome theme" --body "Описание изменений"
-```
+- `DEFAULT_THEME` — тема по умолчанию до прохождения мастера настройки (`"botyaradm_classic"`).
+- `KNOWN_SESSIONS` — словарь резервных команд DE/WM на случай отсутствия `.desktop` файлов.
 
 ---
 

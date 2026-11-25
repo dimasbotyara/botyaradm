@@ -6,14 +6,14 @@ config.py — Константы, пути, цвета.
 from pathlib import Path
 
 # ─── Пути ──────────────────────────────────────────────
-# Корень конфигурации PyDM
-PYDM_DIR = Path.home() / ".config" / "pydm"
+# Корень конфигурации botyaradm
+BOTYARADM_DIR = Path.home() / ".config" / "botyaradm"
 
 # Файл истории запусков
-HISTORY_FILE = PYDM_DIR / "history.json"
+HISTORY_FILE = BOTYARADM_DIR / "history.json"
 
 # Файл пользовательских настроек (setup wizard)
-SETTINGS_FILE = PYDM_DIR / "settings.json"
+SETTINGS_FILE = BOTYARADM_DIR / "settings.json"
 
 # ─── Пользователь ─────────────────────────────────────
 USERNAME = "dimasbotyara"
@@ -76,8 +76,8 @@ KNOWN_SESSIONS = {
 SHOW_ASCII_LOGO   = True               # Показывать ASCII-логотип в шапке
 SHOW_SESSION_TYPE = True               # Показывать теги [X11] / [Wayland] / [TTY]
 SHOW_STATUS_BAR   = True               # Показывать строку статуса (время, юзер, сессии)
-CLEAR_TERMINAL    = True               # Очищать терминал до и после работы PyDM
-DEFAULT_THEME     = "pydm_classic"     # Тема по умолчанию до прохождения мастера
+CLEAR_TERMINAL    = True               # Очищать терминал до и после работы botyaradm
+DEFAULT_THEME     = "botyaradm_classic" # Тема по умолчанию до прохождения мастера
 
 # ─── Цвета (имена цветов curses) ──────────────────────
 # Доступны: black, red, green, yellow, blue, magenta, cyan, white, default

@@ -9,12 +9,12 @@ import time
 from pathlib import Path
 from typing import Any
 
-from config import HISTORY_FILE, PYDM_DIR
+from config import BOTYARADM_DIR, HISTORY_FILE
 
 
 def _ensure_dir() -> None:
     """Создаёт директорию конфигурации если не существует."""
-    PYDM_DIR.mkdir(parents=True, exist_ok=True)
+    BOTYARADM_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _load_raw() -> dict[str, Any]:
