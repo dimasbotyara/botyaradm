@@ -14,6 +14,7 @@ import textwrap
 import time
 from collections.abc import Callable
 from datetime import datetime
+from typing import Any
 
 from config import (
     AUTO_SELECT_TIMEOUT,
@@ -27,7 +28,7 @@ from config import (
 )
 from detector import get_session_type
 from greetings import get_greeting
-from themes import init_theme_colors
+from themes import init_theme_colors, reset_tty_palette
 from tui_utils import (
     ASCII_LOGO,
     decode_escape_sequence,
@@ -119,6 +120,24 @@ def _draw_logo_or_bar(
     return y + 1
 
 
+def _run_curses(fn: Callable[..., Any], *args: Any) -> Any:
+    """Запускает curses-экран с очисткой экрана и сбросом палитры TTY при выходе."""
+    def _wrapped(stdscr: "curses.window") -> Any:
+        try:
+            return fn(stdscr, *args)
+        finally:
+            try:
+                stdscr.erase()
+                stdscr.refresh()
+            except curses.error:
+                pass
+
+    try:
+        return curses.wrapper(_wrapped)
+    finally:
+        reset_tty_palette()
+
+
 # ─── 1. Меню выбора пользователя ──────────────────────
 
 
@@ -164,6 +183,10 @@ def _user_menu_main(
             logo_h = (len(ASCII_LOGO) + 2) if show_logo else 1
             fixed_h = logo_h + 7
             visible_items = min(len(users), max(1, max_y - fixed_h))
+            if selected_idx < scroll_offset:
+                scroll_offset = selected_idx
+            elif selected_idx >= scroll_offset + visible_items:
+                scroll_offset = max(0, selected_idx - visible_items + 1)
             max_scroll = max(0, len(users) - visible_items)
             scroll_offset = max(0, min(scroll_offset, max_scroll))
 
@@ -300,7 +323,7 @@ def show_user_menu(
     except locale.Error:
         pass
 
-    return curses.wrapper(_user_menu_main, users, theme_id, default_user)
+    return _run_curses(_user_menu_main, users, theme_id, default_user)
 
 
 # ─── 2. Запрос пароля ─────────────────────────────────
@@ -491,7 +514,7 @@ def show_password_prompt(
     except locale.Error:
         pass
 
-    return curses.wrapper(_password_prompt_main, username, theme_id, verify_fn)
+    return _run_curses(_password_prompt_main, username, theme_id, verify_fn)
 
 
 # ─── 3. Главное меню выбора DE/WM ─────────────────────
@@ -556,6 +579,10 @@ def _draw_ui(
     avail_for_items = max(1, max_y - fixed_h)
     visible_items = min(len(sessions), avail_for_items)
 
+    if selected_idx < scroll_offset:
+        scroll_offset = selected_idx
+    elif selected_idx >= scroll_offset + visible_items:
+        scroll_offset = max(0, selected_idx - visible_items + 1)
     max_scroll = max(0, len(sessions) - visible_items)
     scroll_offset = max(0, min(scroll_offset, max_scroll))
 
@@ -636,7 +663,7 @@ def _draw_ui(
                 y,
                 left + 1 + len(left_part),
                 " " * gap,
-                attrs["unselected"],
+                row_attr,
             )
             if badge_text:
                 badge_x = left + 1 + len(left_part) + gap
@@ -657,7 +684,7 @@ def _draw_ui(
                     last_marker.lstrip(),
                     attrs["last"],
                 )
-            safe_addstr(stdscr, y, left + box_w - 2, " ", attrs["unselected"])
+            safe_addstr(stdscr, y, left + box_w - 2, " ", row_attr)
 
         safe_addstr(stdscr, y, left + box_w - 1, "|", attrs["border"])
         y += 1
@@ -855,7 +882,7 @@ def show_menu(
     active_user = username or USERNAME
     greeting = get_greeting(active_user)
 
-    return curses.wrapper(
+    return _run_curses(
         _curses_main,
         sessions,
         last_used_exec,
