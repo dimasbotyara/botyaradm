@@ -5,7 +5,7 @@ setup_wizard.py — Интерактивный мастер первоначал
   1. (Если > 1 пользователя) Всегда ли спрашивать пользователя при запуске
      (и выбор пользователя по умолчанию, если «Нет»; при 1 пользователе — автовыбор)
   2. Запрашивать ли системный пароль при входе
-  3. Выбор цветовой темы оформления (24 темы с мгновенным живым предпросмотром)
+  3. Выбор цветовой темы оформления (25 тем с мгновенным живым предпросмотром)
 """
 
 import curses
@@ -13,7 +13,7 @@ import locale
 from typing import Any
 
 from settings import default_settings, save_settings
-from themes import THEME_ORDER, THEMES, get_theme, init_theme_colors
+from themes import THEME_ORDER, THEMES, get_theme, init_theme_colors, reset_tty_palette
 from tui_utils import decode_escape_sequence, safe_addstr, truncate
 
 
@@ -54,6 +54,10 @@ def _draw_wizard_box(
     avail_items = max(1, max_y - fixed_h)
     visible_items = min(len(items), avail_items)
 
+    if selected_idx < scroll_offset:
+        scroll_offset = selected_idx
+    elif selected_idx >= scroll_offset + visible_items:
+        scroll_offset = max(0, selected_idx - visible_items + 1)
     max_scroll = max(0, len(items) - visible_items)
     scroll_offset = max(0, min(scroll_offset, max_scroll))
 
@@ -276,12 +280,14 @@ def _prompt_step(
 
     active_theme = THEMES[THEME_ORDER[selected_idx]].id if is_theme_step else theme_id
     attrs = init_theme_colors(active_theme, stdscr)
+    applied_theme = active_theme
     stdscr.timeout(-1)
 
     while True:
         preview_id = THEME_ORDER[selected_idx] if is_theme_step else None
-        if is_theme_step:
+        if is_theme_step and preview_id != applied_theme:
             attrs = init_theme_colors(preview_id, stdscr)
+            applied_theme = preview_id
 
         visible_items = _draw_wizard_box(
             stdscr=stdscr,
@@ -518,7 +524,20 @@ def run_setup_wizard(
     if not users:
         users = [str(base.get("default_user", "user"))]
 
-    configured = curses.wrapper(_wizard_main, users, base)
+    def _wrapped(stdscr: "curses.window") -> dict[str, Any] | None:
+        try:
+            return _wizard_main(stdscr, users, base)
+        finally:
+            try:
+                stdscr.erase()
+                stdscr.refresh()
+            except curses.error:
+                pass
+
+    try:
+        configured = curses.wrapper(_wrapped)
+    finally:
+        reset_tty_palette()
     if configured is None:
         return None
 

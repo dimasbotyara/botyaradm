@@ -42,6 +42,7 @@ def main(argv: list[str] | None = None) -> None:
         from menu import show_menu, show_password_prompt, show_user_menu
         from settings import is_setup_completed, load_settings
         from setup_wizard import run_setup_wizard
+        from themes import reset_tty_palette
         from tui_utils import clear_terminal
     except ImportError as e:
         print(f"[botyaradm] Ошибка импорта: {e}", file=sys.stderr)
@@ -173,16 +174,20 @@ def main(argv: list[str] | None = None) -> None:
             clear_terminal()
 
     except KeyboardInterrupt:
+        reset_tty_palette()
         if CLEAR_TERMINAL:
             clear_terminal()
         return
     except Exception as e:
+        reset_tty_palette()
         if CLEAR_TERMINAL:
             clear_terminal()
         print(f"[botyaradm] Ошибка: {e}", file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
         print("[botyaradm] Возвращаю управление в TTY.", file=sys.stderr)
         return
+    finally:
+        reset_tty_palette()
 
 
 if __name__ == "__main__":
