@@ -1,5 +1,5 @@
 """
-menu.py — Интерактивные curses ASCII TUI-экраны PyDM.
+menu.py — Интерактивные curses ASCII TUI-экраны botyaradm.
 
 Включает:
   - show_menu(...)            — выбор DE/WM с обратным отсчётом
@@ -106,7 +106,7 @@ def _draw_logo_or_bar(
         safe_addstr(stdscr, y, left, border_top, attrs["border"])
         return y + 1
 
-    title = "[ botyaradm // PyDM ]"
+    title = "[ botyaradm // TTY ]"
     side = max(1, (box_w - len(title) - 2) // 2)
     compact_bar = (
         ("=" * side)
@@ -152,7 +152,7 @@ def _user_menu_main(
         stdscr.erase()
         max_y, max_x = stdscr.getmaxyx()
         if max_y < 10 or max_x < 28:
-            safe_addstr(stdscr, 0, 0, "PyDM: terminal too small", attrs["countdown"])
+            safe_addstr(stdscr, 0, 0, "botyaradm: terminal too small", attrs["countdown"])
             stdscr.refresh()
             visible_items = 1
         else:
@@ -518,7 +518,7 @@ def _draw_ui(
     max_y, max_x = stdscr.getmaxyx()
 
     if max_y < 8 or max_x < 24:
-        safe_addstr(stdscr, 0, 0, "PyDM: terminal too small", attrs["countdown"])
+        safe_addstr(stdscr, 0, 0, "botyaradm: terminal too small", attrs["countdown"])
         stdscr.refresh()
         return 1
 

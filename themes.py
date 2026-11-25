@@ -1,5 +1,5 @@
 """
-themes.py — Коллекция цветовых тем оформления для PyDM (curses TUI).
+themes.py — Коллекция цветовых тем оформления для botyaradm (curses TUI).
 
 Поддерживает:
   - 256-цветную палитру (xterm-256color, alacritty, kitty, foot, tmux и др.)
@@ -31,8 +31,8 @@ class Theme:
 # ─── Каталог тем (24 темы) ────────────────────────────
 _THEMES_LIST: list[Theme] = [
     Theme(
-        id="pydm_classic",
-        name="PyDM Classic",
+        id="botyaradm_classic",
+        name="botyaradm Classic",
         description="Фирменный голубой и глубокий синий",
         palette_256={
             "accent": 51,
@@ -1019,7 +1019,7 @@ def get_theme(theme_id: str | None) -> Theme:
     """Возвращает тему по ID или тему по умолчанию."""
     if theme_id and theme_id in THEMES:
         return THEMES[theme_id]
-    return THEMES["pydm_classic"]
+    return THEMES["botyaradm_classic"]
 
 
 def init_theme_colors(

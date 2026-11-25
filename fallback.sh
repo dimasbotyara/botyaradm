@@ -1,6 +1,6 @@
 #!/bin/bash
 # ──────────────────────────────────────────────────────────
-# fallback.sh — Аварийный запуск если Python/PyDM сломался.
+# fallback.sh — Аварийный запуск если Python/botyaradm сломался.
 #
 # Вызывается из config.fish когда main.py завершился с ошибкой.
 # Предлагает простое текстовое меню без зависимостей.
@@ -10,7 +10,7 @@ set -euo pipefail
 
 echo ""
 echo "╔══════════════════════════════════════════════════════╗"
-echo "║  [PyDM Fallback] Python-меню не запустилось!        ║"
+echo "║  [botyaradm Fallback] Python-меню не запустилось!   ║"
 echo "║  Используем аварийный режим.                        ║"
 echo "╚══════════════════════════════════════════════════════╝"
 echo ""
@@ -126,10 +126,10 @@ if [ "$IS_WAYLAND" = true ]; then
     exec $SELECTED_CMD
 else
     # Создаём временный xinitrc
-    XINITRC="$HOME/.xinitrc.pydm"
+    XINITRC="$HOME/.xinitrc.botyaradm"
     cat > "$XINITRC" << XINITRC_EOF
 #!/bin/sh
-# Сгенерировано PyDM fallback
+# Сгенерировано botyaradm fallback
 [ -f "\$HOME/.Xresources" ] && xrdb -merge "\$HOME/.Xresources"
 [ -f "\$HOME/.xprofile" ] && . "\$HOME/.xprofile"
 exec ${SELECTED_CMD}

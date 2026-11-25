@@ -33,13 +33,13 @@ def _target_home(username: str | None) -> Path:
 def _create_xinitrc(exec_cmd: str, username: str | None = None) -> Path:
     """
     Создаёт временный .xinitrc для startx.
-    Пишет в ~/.xinitrc.pydm чтобы не трогать пользовательский ~/.xinitrc.
+    Пишет в ~/.xinitrc.botyaradm чтобы не трогать пользовательский ~/.xinitrc.
     """
     home_dir = _target_home(username)
-    xinitrc_path = home_dir / ".xinitrc.pydm"
+    xinitrc_path = home_dir / ".xinitrc.botyaradm"
 
     content = f"""#!/bin/sh
-# Сгенерировано PyDM — не редактируйте вручную!
+# Сгенерировано botyaradm — не редактируйте вручную!
 # Этот файл перезаписывается при каждом запуске.
 
 # Загружаем стандартные ресурсы X
@@ -62,7 +62,7 @@ exec {exec_cmd}
             pw = pwd.getpwnam(username)
             os.chown(xinitrc_path, pw.pw_uid, pw.pw_gid)
     except (OSError, KeyError) as e:
-        print(f"[PyDM] Ошибка создания xinitrc: {e}", file=sys.stderr)
+        print(f"[botyaradm] Ошибка создания xinitrc: {e}", file=sys.stderr)
         sys.exit(1)
 
     return xinitrc_path
@@ -164,11 +164,11 @@ def launch(
         _launch_x11(exec_cmd, username=username)
 
     print(
-        f"[PyDM] Ошибка: не удалось запустить {display_name}",
+        f"[botyaradm] Ошибка: не удалось запустить {display_name}",
         file=sys.stderr,
     )
     print(
-        f"[PyDM] Команда: {exec_cmd}",
+        f"[botyaradm] Команда: {exec_cmd}",
         file=sys.stderr,
     )
     sys.exit(1)

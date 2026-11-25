@@ -1,5 +1,5 @@
 """
-main.py — Точка входа PyDM.
+main.py — Точка входа botyaradm.
 
 Порядок работы:
   1. Проверка графической сессии (DISPLAY / WAYLAND_DISPLAY)
@@ -17,14 +17,14 @@ import traceback
 
 
 def main(argv: list[str] | None = None) -> None:
-    """Главная функция PyDM."""
+    """Главная функция botyaradm."""
     args = argv if argv is not None else sys.argv[1:]
     force_wizard = "--setup" in args or "--wizard" in args
 
     # ─── Защита: не запускаемся внутри графической сессии ───
     if os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"):
-        print("[PyDM] Графическая сессия уже запущена!")
-        print("[PyDM] PyDM предназначен для запуска из TTY.")
+        print("[botyaradm] Графическая сессия уже запущена!")
+        print("[botyaradm] botyaradm предназначен для запуска из TTY.")
         sys.exit(0)
 
     # ─── Импорты внутри main() ───
@@ -44,13 +44,13 @@ def main(argv: list[str] | None = None) -> None:
         from setup_wizard import run_setup_wizard
         from tui_utils import clear_terminal
     except ImportError as e:
-        print(f"[PyDM] Ошибка импорта: {e}", file=sys.stderr)
+        print(f"[botyaradm] Ошибка импорта: {e}", file=sys.stderr)
         print(
-            "[PyDM] Проверь целостность файлов PyDM и поддержку curses в Python.",
+            "[botyaradm] Проверь целостность файлов botyaradm и поддержку curses в Python.",
             file=sys.stderr,
         )
         print(
-            "[PyDM] Возвращаю управление в TTY.",
+            "[botyaradm] Возвращаю управление в TTY.",
             file=sys.stderr,
         )
         return
@@ -111,8 +111,8 @@ def main(argv: list[str] | None = None) -> None:
         if not sessions:
             if CLEAR_TERMINAL:
                 clear_terminal()
-            print("[PyDM] Не найдено ни одной DE/WM!", file=sys.stderr)
-            print("[PyDM] Возвращаю управление в TTY.", file=sys.stderr)
+            print("[botyaradm] Не найдено ни одной DE/WM!", file=sys.stderr)
+            print("[botyaradm] Возвращаю управление в TTY.", file=sys.stderr)
             return
 
         tty_entry = None
@@ -179,9 +179,9 @@ def main(argv: list[str] | None = None) -> None:
     except Exception as e:
         if CLEAR_TERMINAL:
             clear_terminal()
-        print(f"[PyDM] Ошибка: {e}", file=sys.stderr)
+        print(f"[botyaradm] Ошибка: {e}", file=sys.stderr)
         traceback.print_exc(file=sys.stderr)
-        print("[PyDM] Возвращаю управление в TTY.", file=sys.stderr)
+        print("[botyaradm] Возвращаю управление в TTY.", file=sys.stderr)
         return
 
 

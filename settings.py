@@ -1,11 +1,11 @@
 """
-settings.py — Хранение и загрузка настроек PyDM (~/.config/pydm/settings.json).
+settings.py — Хранение и загрузка настроек botyaradm (~/.config/botyaradm/settings.json).
 """
 
 import json
 from typing import Any
 
-from config import DEFAULT_THEME, PYDM_DIR, SETTINGS_FILE, USERNAME
+from config import BOTYARADM_DIR, DEFAULT_THEME, SETTINGS_FILE, USERNAME
 
 
 def default_settings() -> dict[str, Any]:
@@ -57,7 +57,7 @@ def is_setup_completed() -> bool:
 
 def save_settings(data: dict[str, Any]) -> None:
     """Атомарно сохраняет настройки в settings.json."""
-    PYDM_DIR.mkdir(parents=True, exist_ok=True)
+    BOTYARADM_DIR.mkdir(parents=True, exist_ok=True)
     payload = default_settings()
     payload.update(data)
 
