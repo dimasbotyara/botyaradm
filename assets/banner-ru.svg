@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 320" width="900" height="320" role="img" aria-label="botyaradm (PyDM) — Дисплей-менеджер для Linux TTY на Python curses без зависимостей">
+  <defs>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090d16"/>
+      <stop offset="55%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#0b1324"/>
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="50%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <linearGradient id="glow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.03"/>
+    </linearGradient>
+    <pattern id="dot-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="#334155" opacity="0.45"/>
+    </pattern>
+  </defs>
+
+  <!-- Outer card -->
+  <rect x="4" y="4" width="892" height="312" rx="18" fill="url(#bg-grad)" stroke="#1e293b" stroke-width="2"/>
+  <rect x="4" y="4" width="892" height="312" rx="18" fill="url(#dot-grid)"/>
+  <ellipse cx="220" cy="70" rx="260" ry="130" fill="url(#glow-grad)"/>
+
+  <!-- Top accent bar -->
+  <rect x="44" y="4" width="812" height="3" rx="1.5" fill="url(#accent-grad)"/>
+
+  <!-- Left column: Header, Title, Subtitle, Badges -->
+  <g transform="translate(44, 46)">
+    <!-- Terminal tag pill -->
+    <rect x="0" y="0" width="234" height="28" rx="14" fill="#0f172a" stroke="#22d3ee" stroke-opacity="0.45" stroke-width="1"/>
+    <text x="14" y="18" fill="#22d3ee" font-family="'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono', monospace" font-size="12" font-weight="700" letter-spacing="0.6">&gt;_ TTY ДИСПЛЕЙ-МЕНЕДЖЕР</text>
+
+    <!-- Main Title -->
+    <text x="0" y="88" fill="url(#accent-grad)" font-family="'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono', monospace" font-size="54" font-weight="800" letter-spacing="-1">botyaradm</text>
+
+    <!-- PyDM version/alias badge -->
+    <rect x="318" y="52" width="76" height="30" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="356" y="72" text-anchor="middle" fill="#7dd3fc" font-family="'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono', monospace" font-size="14" font-weight="700">PyDM</text>
+
+    <!-- Subtitle -->
+    <text x="0" y="128" fill="#cbd5e1" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="17" font-weight="500">curses TUI-лаунчер для X11, Wayland и TTY без зависимостей</text>
+    <text x="0" y="154" fill="#94a3b8" font-family="'Inter', 'Segoe UI', system-ui, sans-serif" font-size="14">Запускается из системного Python — без venv и сторонних библиотек</text>
+
+    <!-- Feature badges row -->
+    <g transform="translate(0, 186)" font-family="'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono', monospace" font-size="11.5" font-weight="600">
+      <rect x="0" y="0" width="128" height="30" rx="8" fill="#082f49" stroke="#0284c7" stroke-width="1"/>
+      <text x="64" y="19" text-anchor="middle" fill="#7dd3fc">Только Stdlib</text>
+
+      <rect x="138" y="0" width="110" height="30" rx="8" fill="#172554" stroke="#2563eb" stroke-width="1"/>
+      <text x="193" y="19" text-anchor="middle" fill="#93c5fd">curses TUI</text>
+
+      <rect x="258" y="0" width="144" height="30" rx="8" fill="#0f291e" stroke="#10b981" stroke-opacity="0.7" stroke-width="1"/>
+      <text x="330" y="19" text-anchor="middle" fill="#6ee7b7">X11 · Wayland · TTY</text>
+    </g>
+  </g>
+
+  <!-- Right column: Mini ASCII TUI Terminal Preview -->
+  <g transform="translate(502, 36)">
+    <!-- Terminal window -->
+    <rect x="0" y="0" width="356" height="248" rx="12" fill="#050811" stroke="#334155" stroke-width="1.5"/>
+    <!-- Title bar -->
+    <rect x="0" y="0" width="356" height="30" rx="12" fill="#111827"/>
+    <rect x="0" y="18" width="356" height="12" fill="#111827"/>
+    <line x1="0" y1="30" x2="356" y2="30" stroke="#1e293b" stroke-width="1"/>
+
+    <!-- Window dots -->
+    <circle cx="18" cy="15" r="5" fill="#ef4444"/>
+    <circle cx="36" cy="15" r="5" fill="#eab308"/>
+    <circle cx="54" cy="15" r="5" fill="#22c55e"/>
+    <text x="190" y="19" text-anchor="middle" fill="#94a3b8" font-family="'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono', monospace" font-size="11">tty1 — python3 main.py</text>
+
+    <!-- Terminal content -->
+    <g transform="translate(16, 52)" font-family="'JetBrains Mono', 'Fira Code', 'DejaVu Sans Mono', monospace" font-size="12">
+      <text x="0" y="0" fill="#22d3ee" font-weight="700">+-[ Выбери DE/WM ]-------------------+</text>
+
+      <!-- Selected row -->
+      <rect x="0" y="14" width="324" height="24" rx="4" fill="#1d4ed8"/>
+      <text x="8" y="30" fill="#ffffff" font-weight="700">&gt;&gt; [1] Hyprland        [Wayland] *last</text>
+
+      <!-- Other rows -->
+      <text x="8" y="56" fill="#22d3ee">   [2] XFCE</text>
+      <text x="234" y="56" fill="#4ade80">[X11]</text>
+
+      <text x="8" y="80" fill="#22d3ee">   [3] i3wm</text>
+      <text x="234" y="80" fill="#4ade80">[X11]</text>
+
+      <text x="8" y="104" fill="#67e8f9">   [4] Продолжить в TTY</text>
+      <text x="234" y="104" fill="#64748b">[TTY]</text>
+
+      <text x="0" y="128" fill="#22d3ee" font-weight="700">+------------------------------------+</text>
+
+      <!-- Countdown bar -->
+      <text x="0" y="156" fill="#facc15" font-weight="700">[!] Автозапуск 4с   [########..]</text>
+      <text x="0" y="178" fill="#64748b" font-size="10.5">[Up/Down] Выбор  [1-9] Старт  [q] TTY</text>
+    </g>
+  </g>
+</svg>
